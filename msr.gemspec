@@ -7,7 +7,8 @@ Gem::Specification.new do |s|
   s.description = 'A library for controlling magnetic stripe reader/writers.'
   s.authors = ['William Woodruff']
   s.email = 'william@tuffbizz.com'
-  s.files = Dir['LICENSE', 'README.md', '.yardopts', 'lib/**/*']
+  s.files = Dir['LICENSE', 'README.md', '.yardopts', 'lib/**/*', 'ext/**/*']
+  s.extensions << 'ext/msr/extconf.rb'
   s.homepage = 'https://github.com/woodruffw/msr'
   s.license = 'MIT'
 end

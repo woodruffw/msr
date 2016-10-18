@@ -3,7 +3,9 @@ msr
 
 A ruby gem for controlling magnetic stripe reader-writers (on UNIX/UNIX-likes).
 
-## Demo
+Uses [libmsr](https://github.com/woodruffw/libmsr).
+
+## Roadmap
 
 ```ruby
 require 'msr'
@@ -22,6 +24,3 @@ msr.coercivity = :high # :low
 # more to come
 ```
 
-## Hardware support
-
-Full support for the MSR206 and MSR505C is planned.
