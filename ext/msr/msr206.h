@@ -1,12 +1,9 @@
 #ifndef RUBY_MSR_206
 #define RUBY_MSR_206
 
-#include <ruby.h>
-#include <libmsr.h>
+extern VALUE cMSR_MSR206;
 
-#include "msr.h"
-
-typedef struct msr206_ctx_t
+typedef struct
 {
 	int fd;
 } msr206_ctx_t;
