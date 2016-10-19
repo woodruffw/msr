@@ -6,6 +6,7 @@
 
 #include "msr206.h"
 #include "track.h"
+#include "tracks.h"
 
 extern VALUE mMSR;
 

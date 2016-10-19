@@ -8,4 +8,5 @@ void Init_msr()
 
 	Init_msr_msr206();
 	Init_msr_track();
+	Init_msr_tracks();
 }
