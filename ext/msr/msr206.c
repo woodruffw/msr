@@ -6,6 +6,7 @@ static VALUE allocate(VALUE klass);
 static void deallocate_206_ctx(msr206_ctx_t *ctx);
 static VALUE initialize(VALUE self, VALUE rb_string);
 static VALUE set_coercivity(VALUE self, VALUE co_sym);
+static VALUE set_led(VALUE self, VALUE led_sym);
 static VALUE raw_read(VALUE self);
 static VALUE iso_read(VALUE self);
 
@@ -15,6 +16,7 @@ void Init_msr_msr206()
 	rb_define_alloc_func(cMSR_MSR206, allocate);
 	rb_define_method(cMSR_MSR206, "initialize", initialize, 1);
 	rb_define_method(cMSR_MSR206, "coercivity=", set_coercivity, 1);
+	rb_define_method(cMSR_MSR206, "led=", set_led, 1);
 	rb_define_method(cMSR_MSR206, "raw_read", raw_read, 0);
 	rb_define_method(cMSR_MSR206, "iso_read", iso_read, 0);
 }
@@ -86,6 +88,39 @@ static VALUE set_coercivity(VALUE self, VALUE co_sym)
 	if (ret != LIBMSR_ERR_OK) {
 		rb_raise(rb_eRuntimeError, "Couldn't change coercivity (%d)", ret);
 	}
+
+	return self;
+}
+
+static VALUE set_led(VALUE self, VALUE led_sym)
+{
+	VALUE grn = ID2SYM(rb_intern("green"));
+	VALUE ylw = ID2SYM(rb_intern("yellow"));
+	VALUE red = ID2SYM(rb_intern("red"));
+	VALUE off = ID2SYM(rb_intern("off"));
+	msr206_ctx_t *ctx;
+	uint8_t led;
+
+	Check_Type(led_sym, T_SYMBOL);
+	Data_Get_Struct(self, msr206_ctx_t, ctx);
+
+	if (led_sym == grn)	{
+		led = MSR_CMD_LED_GRN_ON;
+	}
+	else if (led_sym == ylw) {
+		led = MSR_CMD_LED_YLW_ON;
+	}
+	else if (led_sym == red) {
+		led = MSR_CMD_LED_RED_ON;
+	}
+	else if (led_sym == off) {
+		led = MSR_CMD_LED_OFF;
+	}
+	else {
+		rb_raise(rb_eArgError, "Unknown LED color command");
+	}
+
+	msr_flash_led(ctx->fd, led);
 
 	return self;
 }
