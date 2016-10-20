@@ -27,7 +27,7 @@ void Init_msr_msr206()
 
 static VALUE allocate(VALUE klass)
 {
-	msr206_ctx_t *ctx = malloc(sizeof(msr206_ctx_t));
+	msr206_ctx_t *ctx = ALLOC(msr206_ctx_t);
 
 	ctx->fd = -1;
 
