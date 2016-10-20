@@ -8,6 +8,7 @@ static VALUE initialize(VALUE self, VALUE rb_string);
 static VALUE comm_test(VALUE self);
 static VALUE sensor_test(VALUE self);
 static VALUE ram_test(VALUE self);
+static VALUE reset(VALUE self);
 static VALUE get_coercivity(VALUE self);
 static VALUE set_coercivity(VALUE self, VALUE co_sym);
 static VALUE set_bpi(VALUE self, VALUE bpi);
@@ -26,6 +27,7 @@ void Init_msr_msr206()
 	rb_define_method(cMSR_MSR206, "comm_test!", comm_test, 0);
 	rb_define_method(cMSR_MSR206, "sensor_test!", sensor_test, 0);
 	rb_define_method(cMSR_MSR206, "ram_test!", ram_test, 0);
+	rb_define_method(cMSR_MSR206, "reset!", reset, 0);
 	rb_define_method(cMSR_MSR206, "coercivity", get_coercivity, 0);
 	rb_define_method(cMSR_MSR206, "coercivity=", set_coercivity, 1);
 	rb_define_method(cMSR_MSR206, "bpi=", set_bpi, 1);
@@ -133,6 +135,17 @@ static VALUE ram_test(VALUE self)
 	}
 
 	return pass;
+}
+
+static VALUE reset(VALUE self)
+{
+	msr206_ctx_t *ctx;
+
+	Data_Get_Struct(self, msr206_ctx_t, ctx);
+
+	msr_reset(ctx->fd);
+
+	return self;
 }
 
 static VALUE get_coercivity(VALUE self)
