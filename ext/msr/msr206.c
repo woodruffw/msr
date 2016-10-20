@@ -9,6 +9,8 @@ static VALUE set_coercivity(VALUE self, VALUE co_sym);
 static VALUE set_led(VALUE self, VALUE led_sym);
 static VALUE raw_read(VALUE self);
 static VALUE iso_read(VALUE self);
+static VALUE raw_write(VALUE self, VALUE tks_obj);
+static VALUE iso_write(VALUE self, VALUE tks_obj);
 
 void Init_msr_msr206()
 {
@@ -19,6 +21,8 @@ void Init_msr_msr206()
 	rb_define_method(cMSR_MSR206, "led=", set_led, 1);
 	rb_define_method(cMSR_MSR206, "raw_read", raw_read, 0);
 	rb_define_method(cMSR_MSR206, "iso_read", iso_read, 0);
+	rb_define_method(cMSR_MSR206, "raw_write", raw_write, 1);
+	rb_define_method(cMSR_MSR206, "iso_write", iso_write, 1);
 }
 
 static VALUE allocate(VALUE klass)
@@ -150,6 +154,35 @@ static VALUE raw_read(VALUE self)
 }
 
 static VALUE iso_read(VALUE self)
+{
+	msr206_ctx_t *ctx;
+	msr_tracks_t tks = {0};
+	int ret;
+	VALUE tks_obj;
+
+	Data_Get_Struct(self, msr206_ctx_t, ctx);
+
+	for (int i = 0; i < MSR_MAX_TRACKS; i++) {
+		tks.msr_tracks[i].msr_tk_len = MSR_MAX_TRACK_LEN;
+	}
+
+	ret = msr_iso_read(ctx->fd, &tks);
+
+	if (ret != LIBMSR_ERR_OK) {
+		rb_raise(rb_eRuntimeError, "Device read failed (%d)", ret);
+	}
+
+	tks_obj = msr_tracks_new(tks);
+
+	return tks_obj;
+}
+
+static VALUE raw_write(VALUE self, VALUE tks_obj)
+{
+	return Qnil;
+}
+
+static VALUE iso_write(VALUE self, VALUE tks_obj)
 {
 	return Qnil;
 }
