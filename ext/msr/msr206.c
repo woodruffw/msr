@@ -95,7 +95,7 @@ static VALUE raw_read(VALUE self)
 	msr206_ctx_t *ctx;
 	msr_tracks_t tks = {0};
 	int ret;
-	VALUE tk_ary = rb_ary_new();
+	VALUE tks_obj;
 
 	Data_Get_Struct(self, msr206_ctx_t, ctx);
 
@@ -109,13 +109,9 @@ static VALUE raw_read(VALUE self)
 		rb_raise(rb_eRuntimeError, "Device read failed (%d)", ret);
 	}
 
-	for (int i = 0; i < MSR_MAX_TRACKS; i++) {
-		VALUE tk_obj = msr_track_new(tks.msr_tracks[i]);
+	tks_obj = msr_tracks_new(tks);
 
-		rb_ary_push(tk_ary, tk_obj);
-	}
-
-	return tk_ary;
+	return tks_obj;
 }
 
 static VALUE iso_read(VALUE self)
