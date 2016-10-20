@@ -8,6 +8,7 @@ static VALUE initialize(VALUE self, VALUE rb_string);
 static VALUE comm_test(VALUE self);
 static VALUE sensor_test(VALUE self);
 static VALUE ram_test(VALUE self);
+static VALUE get_coercivity(VALUE self);
 static VALUE set_coercivity(VALUE self, VALUE co_sym);
 static VALUE set_bpi(VALUE self, VALUE bpi);
 static VALUE set_bpc(VALUE self, VALUE bpc);
@@ -25,6 +26,7 @@ void Init_msr_msr206()
 	rb_define_method(cMSR_MSR206, "comm_test!", comm_test, 0);
 	rb_define_method(cMSR_MSR206, "sensor_test!", sensor_test, 0);
 	rb_define_method(cMSR_MSR206, "ram_test!", ram_test, 0);
+	rb_define_method(cMSR_MSR206, "coercivity", get_coercivity, 0);
 	rb_define_method(cMSR_MSR206, "coercivity=", set_coercivity, 1);
 	rb_define_method(cMSR_MSR206, "bpi=", set_bpi, 1);
 	rb_define_method(cMSR_MSR206, "bpc=", set_bpc, 1);
@@ -94,6 +96,28 @@ static VALUE ram_test(VALUE self)
 	return Qnil;
 }
 
+static VALUE get_coercivity(VALUE self)
+{
+	VALUE hi_co = ID2SYM(rb_intern("hi"));
+	VALUE lo_co = ID2SYM(rb_intern("lo"));
+	msr206_ctx_t *ctx;
+	int ret;
+
+	Data_Get_Struct(self, msr206_ctx_t, ctx);
+
+	ret = msr_get_co(ctx->fd);
+
+	if (ret == MSR_CO_HI) {
+		return hi_co;
+	}
+	else if (ret == MSR_CO_LO) {
+		return lo_co;
+	}
+	else {
+		rb_raise(rb_eRuntimeError, "Couldn't get coercivity (%d)", ret);
+	}
+}
+
 static VALUE set_coercivity(VALUE self, VALUE co_sym)
 {
 	VALUE hi_co = ID2SYM(rb_intern("hi"));
@@ -133,17 +157,21 @@ static VALUE set_bpc(VALUE self, VALUE bpc)
 
 static VALUE set_led(VALUE self, VALUE led_sym)
 {
+	VALUE all = ID2SYM(rb_intern("all"));
 	VALUE grn = ID2SYM(rb_intern("green"));
 	VALUE ylw = ID2SYM(rb_intern("yellow"));
 	VALUE red = ID2SYM(rb_intern("red"));
-	VALUE off = ID2SYM(rb_intern("off"));
+	VALUE off = ID2SYM(rb_intern("none"));
 	msr206_ctx_t *ctx;
 	uint8_t led;
 
 	Check_Type(led_sym, T_SYMBOL);
 	Data_Get_Struct(self, msr206_ctx_t, ctx);
 
-	if (led_sym == grn)	{
+	if (led_sym == all) {
+		led = MSR_CMD_LED_ON;
+	}
+	else if (led_sym == grn) {
 		led = MSR_CMD_LED_GRN_ON;
 	}
 	else if (led_sym == ylw) {
