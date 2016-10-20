@@ -11,7 +11,7 @@ static VALUE ram_test(VALUE self);
 static VALUE get_coercivity(VALUE self);
 static VALUE set_coercivity(VALUE self, VALUE co_sym);
 static VALUE set_bpi(VALUE self, VALUE bpi);
-static VALUE set_bpc(VALUE self, VALUE bpc);
+static VALUE set_bpc(VALUE self, VALUE bpc1, VALUE bpc2, VALUE bpc3);
 static VALUE set_led(VALUE self, VALUE led_sym);
 static VALUE raw_read(VALUE self);
 static VALUE iso_read(VALUE self);
@@ -29,7 +29,7 @@ void Init_msr_msr206()
 	rb_define_method(cMSR_MSR206, "coercivity", get_coercivity, 0);
 	rb_define_method(cMSR_MSR206, "coercivity=", set_coercivity, 1);
 	rb_define_method(cMSR_MSR206, "bpi=", set_bpi, 1);
-	rb_define_method(cMSR_MSR206, "bpc=", set_bpc, 1);
+	rb_define_method(cMSR_MSR206, "bpc=", set_bpc, 3);
 	rb_define_method(cMSR_MSR206, "led=", set_led, 1);
 	rb_define_method(cMSR_MSR206, "raw_read", raw_read, 0);
 	rb_define_method(cMSR_MSR206, "iso_read", iso_read, 0);
@@ -186,12 +186,46 @@ static VALUE set_coercivity(VALUE self, VALUE co_sym)
 
 static VALUE set_bpi(VALUE self, VALUE bpi)
 {
-	return Qnil;
+	uint8_t bpi_tk2;
+	msr206_ctx_t *ctx;
+	int ret;
+
+	Check_Type(bpi, T_FIXNUM);
+	Data_Get_Struct(self, msr206_ctx_t, ctx);
+
+	bpi_tk2 = NUM2CHR(bpi);
+
+	ret = msr_set_bpi(ctx->fd, bpi_tk2);
+
+	if (ret != LIBMSR_ERR_OK) {
+		rb_raise(rb_eRuntimeError, "Couldn't change bpi (%d)", ret);
+	}
+
+	return self;
 }
 
-static VALUE set_bpc(VALUE self, VALUE bpc)
+static VALUE set_bpc(VALUE self, VALUE bpc1, VALUE bpc2, VALUE bpc3)
 {
-	return Qnil;
+	uint8_t bpc_tk1, bpc_tk2, bpc_tk3;
+	msr206_ctx_t *ctx;
+	int ret;
+
+	Check_Type(bpc1, T_FIXNUM);
+	Check_Type(bpc2, T_FIXNUM);
+	Check_Type(bpc3, T_FIXNUM);
+	Data_Get_Struct(self, msr206_ctx_t, ctx);
+
+	bpc_tk1 = NUM2CHR(bpc1);
+	bpc_tk2 = NUM2CHR(bpc2);
+	bpc_tk3 = NUM2CHR(bpc3);
+
+	ret = msr_set_bpc(ctx->fd, bpc_tk1, bpc_tk2, bpc_tk3);
+
+	if (ret != LIBMSR_ERR_OK) {
+		rb_raise(rb_eRuntimeError, "Couldn't change bpc (%d)", ret);
+	}
+
+	return self;
 }
 
 static VALUE set_led(VALUE self, VALUE led_sym)
