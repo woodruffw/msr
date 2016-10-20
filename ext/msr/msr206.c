@@ -83,17 +83,56 @@ static VALUE initialize(VALUE self, VALUE rb_path)
 
 static VALUE comm_test(VALUE self)
 {
-	return Qnil;
+	VALUE pass = ID2SYM(rb_intern("pass"));
+	VALUE fail = ID2SYM(rb_intern("fail"));
+	msr206_ctx_t *ctx;
+	int ret;
+
+	Data_Get_Struct(self, msr206_ctx_t, ctx);
+
+	ret = msr_commtest(ctx->fd);
+
+	if (ret != LIBMSR_ERR_OK) {
+		return fail;
+	}
+
+	return pass;
 }
 
 static VALUE sensor_test(VALUE self)
 {
-	return Qnil;
+	VALUE pass = ID2SYM(rb_intern("pass"));
+	VALUE fail = ID2SYM(rb_intern("fail"));
+	msr206_ctx_t *ctx;
+	int ret;
+
+	Data_Get_Struct(self, msr206_ctx_t, ctx);
+
+	ret = msr_sensor_test(ctx->fd);
+
+	if (ret != LIBMSR_ERR_OK) {
+		return fail;
+	}
+
+	return pass;
 }
 
 static VALUE ram_test(VALUE self)
 {
-	return Qnil;
+	VALUE pass = ID2SYM(rb_intern("pass"));
+	VALUE fail = ID2SYM(rb_intern("fail"));
+	msr206_ctx_t *ctx;
+	int ret;
+
+	Data_Get_Struct(self, msr206_ctx_t, ctx);
+
+	ret = msr_ram_test(ctx->fd);
+
+	if (ret != LIBMSR_ERR_OK) {
+		return fail;
+	}
+
+	return pass;
 }
 
 static VALUE get_coercivity(VALUE self)
