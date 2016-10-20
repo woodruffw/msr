@@ -9,6 +9,6 @@ Gem::Specification.new do |s|
   s.email = 'william@tuffbizz.com'
   s.files = Dir['LICENSE', 'README.md', '.yardopts', 'lib/**/*', 'ext/**/*']
   s.extensions << 'ext/msr/extconf.rb'
-  s.homepage = 'https://github.com/woodruffw/msr'
+  s.homepage = 'https://github.com/woodruffw/ruby-msr'
   s.license = 'MIT'
 end
