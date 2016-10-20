@@ -1,6 +1,5 @@
 #include "msr.h"
 
-static VALUE initialize(VALUE self, VALUE data);
 static VALUE msr_track_data(VALUE self);
 static VALUE msr_track_length(VALUE self);
 
@@ -12,28 +11,12 @@ void Init_msr_track()
 
 	rb_define_const(c_MSR_Track, "MAX_TRACK_LEN", INT2NUM(MSR_MAX_TRACK_LEN));
 
-	rb_define_method(c_MSR_Track, "initialize", initialize, 1);
+	rb_define_method(c_MSR_Track, "initialize", msr_track_initialize, 1);
 	rb_define_method(c_MSR_Track, "data", msr_track_data, 0);
 	rb_define_method(c_MSR_Track, "length", msr_track_length, 0);
 }
 
-/*
-	A convenience function for instantiating a new MSR::Track in C.
-*/
-VALUE msr_track_new(msr_track_t tk)
-{
-	VALUE obj = rb_obj_alloc(c_MSR_Track);
-
-	VALUE tk_data_ary = rb_ary_new();
-
-	for (int i = 0; i < tk.msr_tk_len; i++) {
-		rb_ary_push(tk_data_ary, INT2NUM(tk.msr_tk_data[i]));
-	}
-
-	return initialize(obj, tk_data_ary);
-}
-
-static VALUE initialize(VALUE self, VALUE tk_data_ary)
+VALUE msr_track_initialize(VALUE self, VALUE tk_data_ary)
 {
 	int tk_len;
 

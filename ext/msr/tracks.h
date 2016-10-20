@@ -4,6 +4,6 @@
 extern VALUE c_MSR_Tracks;
 
 void Init_msr_tracks();
-VALUE msr_tracks_new(msr_tracks_t tks);
+VALUE msr_tracks_initialize(VALUE self, VALUE tk1, VALUE tk2, VALUE tk3);
 
 #endif

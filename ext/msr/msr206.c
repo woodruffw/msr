@@ -315,10 +315,46 @@ static VALUE iso_read(VALUE self)
 
 static VALUE raw_write(VALUE self, VALUE tks_obj)
 {
-	return Qnil;
+	msr206_ctx_t *ctx;
+	msr_tracks_t tks = {0};
+	int ret;
+
+	if (CLASS_OF(tks_obj) != c_MSR_Tracks) {
+		rb_raise(rb_eArgError, "expected tracks object");
+	}
+
+	Data_Get_Struct(self, msr206_ctx_t, ctx);
+
+	msr_unwrap_tracks(tks_obj, &tks);
+
+	ret = msr_raw_write(ctx->fd, &tks);
+
+	if (ret != LIBMSR_ERR_OK) {
+		rb_raise(rb_eRuntimeError, "Device write failed (%d)", ret);
+	}
+
+	return self;
 }
 
 static VALUE iso_write(VALUE self, VALUE tks_obj)
 {
-	return Qnil;
+	msr206_ctx_t *ctx;
+	msr_tracks_t tks = {0};
+	int ret;
+
+	if (CLASS_OF(tks_obj) != c_MSR_Tracks) {
+		rb_raise(rb_eArgError, "expected tracks object");
+	}
+
+	Data_Get_Struct(self, msr206_ctx_t, ctx);
+
+	msr_unwrap_tracks(tks_obj, &tks);
+
+	ret = msr_iso_write(ctx->fd, &tks);
+
+	if (ret != LIBMSR_ERR_OK) {
+		rb_raise(rb_eRuntimeError, "Device write failed (%d)", ret);
+	}
+
+	return self;
 }

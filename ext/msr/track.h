@@ -4,6 +4,6 @@
 extern VALUE c_MSR_Track;
 
 void Init_msr_track();
-VALUE msr_track_new(msr_track_t tk);
+VALUE msr_track_initialize(VALUE self, VALUE data);
 
 #endif
