@@ -5,7 +5,12 @@ VALUE cMSR_MSR206 = Qnil;
 static VALUE allocate(VALUE klass);
 static void deallocate_206_ctx(msr206_ctx_t *ctx);
 static VALUE initialize(VALUE self, VALUE rb_string);
+static VALUE comm_test(VALUE self);
+static VALUE sensor_test(VALUE self);
+static VALUE ram_test(VALUE self);
 static VALUE set_coercivity(VALUE self, VALUE co_sym);
+static VALUE set_bpi(VALUE self, VALUE bpi);
+static VALUE set_bpc(VALUE self, VALUE bpc);
 static VALUE set_led(VALUE self, VALUE led_sym);
 static VALUE raw_read(VALUE self);
 static VALUE iso_read(VALUE self);
@@ -17,7 +22,12 @@ void Init_msr_msr206()
 	cMSR_MSR206 = rb_define_class_under(mMSR, "MSR206", rb_cObject);
 	rb_define_alloc_func(cMSR_MSR206, allocate);
 	rb_define_method(cMSR_MSR206, "initialize", initialize, 1);
+	rb_define_method(cMSR_MSR206, "comm_test!", comm_test, 0);
+	rb_define_method(cMSR_MSR206, "sensor_test!", sensor_test, 0);
+	rb_define_method(cMSR_MSR206, "ram_test!", ram_test, 0);
 	rb_define_method(cMSR_MSR206, "coercivity=", set_coercivity, 1);
+	rb_define_method(cMSR_MSR206, "bpi=", set_bpi, 1);
+	rb_define_method(cMSR_MSR206, "bpc=", set_bpc, 1);
 	rb_define_method(cMSR_MSR206, "led=", set_led, 1);
 	rb_define_method(cMSR_MSR206, "raw_read", raw_read, 0);
 	rb_define_method(cMSR_MSR206, "iso_read", iso_read, 0);
@@ -69,6 +79,21 @@ static VALUE initialize(VALUE self, VALUE rb_path)
 	return self;
 }
 
+static VALUE comm_test(VALUE self)
+{
+	return Qnil;
+}
+
+static VALUE sensor_test(VALUE self)
+{
+	return Qnil;
+}
+
+static VALUE ram_test(VALUE self)
+{
+	return Qnil;
+}
+
 static VALUE set_coercivity(VALUE self, VALUE co_sym)
 {
 	VALUE hi_co = ID2SYM(rb_intern("hi"));
@@ -94,6 +119,16 @@ static VALUE set_coercivity(VALUE self, VALUE co_sym)
 	}
 
 	return self;
+}
+
+static VALUE set_bpi(VALUE self, VALUE bpi)
+{
+	return Qnil;
+}
+
+static VALUE set_bpc(VALUE self, VALUE bpc)
+{
+	return Qnil;
 }
 
 static VALUE set_led(VALUE self, VALUE led_sym)
