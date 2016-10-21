@@ -1,7 +1,21 @@
 #include "msr.h"
 
+/*
+	The first track on the card.
+	@return [MSR::Track] the track object
+*/
 static VALUE msr_tracks_track1(VALUE self);
+
+/*
+	The second track on the card.
+	@return [MSR::Track] the track object
+*/
 static VALUE msr_tracks_track2(VALUE self);
+
+/*
+	The third track on the card.
+	@return [MSR::Track] the track object
+*/
 static VALUE msr_tracks_track3(VALUE self);
 
 VALUE c_MSR_Tracks = Qnil;

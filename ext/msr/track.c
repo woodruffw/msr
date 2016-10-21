@@ -1,6 +1,15 @@
 #include "msr.h"
 
+/*
+	The data associated with the track.
+	@return [Array<Fixnum>] the track data
+*/
 static VALUE msr_track_data(VALUE self);
+
+/*
+	The length of the track's data.
+	@return [Fixnum] the track length
+*/
 static VALUE msr_track_length(VALUE self);
 
 VALUE c_MSR_Track = Qnil;

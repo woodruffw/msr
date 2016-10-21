@@ -4,25 +4,116 @@ VALUE cMSR_MSR206 = Qnil;
 
 static VALUE allocate(VALUE klass);
 static void deallocate_206_ctx(msr206_ctx_t *ctx);
+
+/*
+	Create a new {MSR::MSR206} instance for a serial device.
+	@param device [String] the serial device to connect to
+	@raise [RuntimeError] if the device can't be opened and/or initialized
+	@example
+		msr = MSR::MSR206.new("/dev/ttyUSB0")
+*/
 static VALUE initialize(VALUE self, VALUE rb_string);
+
+/*
+	Run a communications test between the system and the device.
+	@return [Symbol] `:pass` if the test succeeded, or `:fail` if it failed
+*/
 static VALUE comm_test(VALUE self);
+
+/*
+	Run a test of the device's magnetic sensor.
+	@return [Symbol] `:pass` if the test succeeded, or `:fail` if it failed
+	@note This method is interactive.
+*/
 static VALUE sensor_test(VALUE self);
+
+/*
+	Run a test of the device's internal RAM.
+	@return [Symbol] `:pass` if the test succeeded, or `:fail` if it failed
+*/
 static VALUE ram_test(VALUE self);
+
+
+/*
+	Reset the device to a ready state.
+	@note This method pauses for 100ms.
+*/
 static VALUE reset(VALUE self);
+
+/*
+	Get the device's current coercivity level.
+	@return [Symbol] `:hi` if the device is in Hi-Co mode, `:lo` if Lo-Co
+	@raise [RuntimeError] if the device returns a bad response
+*/
 static VALUE get_coercivity(VALUE self);
+
+/*
+	Set the device's coercivity level.
+	@param coercivity [Symbol] `:hi` for Hi-Co, and `:lo` for Lo-Co
+	@raise [ArgumentError] if the coercivity level is unrecognized
+	@raise [RuntimeError] if the device returns a bad response
+*/
 static VALUE set_coercivity(VALUE self, VALUE co_sym);
+
+/*
+	Set the bits-per-inch on the second track.
+	@param bpi [Fixnum] the BPI setting, either 75 or 210
+	@raise [RuntimeError] if the device returns a bad response
+	@note This only applies to the second track.
+*/
 static VALUE set_bpi(VALUE self, VALUE bpi);
+
+/*
+	Set the bits-per-character on each track.
+	@param bpc1 [Fixnum] the first track's BPC, between 5 and 8
+	@param bpc2 [Fixnum] the second track's BPC, between 5 and 8
+	@param bpc3 [Fixnum] the third track's BPC, between 5 and 8
+	@raise [RuntimeError] if the device returns a bad response
+*/
 static VALUE set_bpc(VALUE self, VALUE bpc1, VALUE bpc2, VALUE bpc3);
+
+/*
+	Control the LEDs on the device.
+	@param led [Symbol] the LED command (`:green`, `:yellow`, `:red`, `:all`,
+		`:none`)
+	@raise [ArgumentError] if the LED command is unrecognized
+*/
 static VALUE set_led(VALUE self, VALUE led_sym);
+
+/*
+	Read raw data from a card.
+	@return [MSR::Tracks] a new tracks object containing the raw card data
+	@note This method is interactive.
+*/
 static VALUE raw_read(VALUE self);
+
+/*
+	Read ISO-formatted data from a card.
+	@return [MSR::Tracks] a new tracks object containing the ISO card data
+	@note This method is interactive.
+*/
 static VALUE iso_read(VALUE self);
+
+/*
+	Write raw data to a card.
+	@param tracks [MSR::Tracks] the raw tracks to write to the card
+	@note This method is interactive.
+*/
 static VALUE raw_write(VALUE self, VALUE tks_obj);
+
+/*
+	Write ISO-formatted data to a card.
+	@param tracks [MSR::Tracks] the ISO tracks to write to the card
+	@note This method is interactive.
+*/
 static VALUE iso_write(VALUE self, VALUE tks_obj);
+
 
 void Init_msr_msr206()
 {
 	cMSR_MSR206 = rb_define_class_under(mMSR, "MSR206", rb_cObject);
 	rb_define_alloc_func(cMSR_MSR206, allocate);
+
 	rb_define_method(cMSR_MSR206, "initialize", initialize, 1);
 	rb_define_method(cMSR_MSR206, "comm_test!", comm_test, 0);
 	rb_define_method(cMSR_MSR206, "sensor_test!", sensor_test, 0);
