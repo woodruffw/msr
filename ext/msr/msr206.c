@@ -54,7 +54,7 @@ static void deallocate_206_ctx(msr206_ctx_t *ctx)
 		msr_serial_close(ctx->fd);
 	}
 
-	free(ctx);
+	xfree(ctx);
 }
 
 static VALUE initialize(VALUE self, VALUE rb_path)
