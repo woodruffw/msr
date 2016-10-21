@@ -28,6 +28,10 @@ VALUE msr_track_initialize(VALUE self, VALUE tk_data_ary)
 		rb_raise(rb_eArgError, "Track >%d bytes", MSR_MAX_TRACK_LEN);
 	}
 
+	for (int i = 0; i < tk_len; ++i) {
+		Check_Type(rb_ary_entry(tk_data_ary, i), T_FIXNUM);
+	}
+
 	rb_iv_set(self, "@data", tk_data_ary);
 
 	return self;
