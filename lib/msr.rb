@@ -4,5 +4,5 @@ require_relative "msr/tracks"
 require_relative "msr/msr206"
 
 module MSR
-  VERSION = "0.0.1".freeze
+  VERSION = "0.0.2".freeze
 end
