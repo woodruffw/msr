@@ -12,6 +12,12 @@ static VALUE msr_track_data(VALUE self);
 */
 static VALUE msr_track_length(VALUE self);
 
+/*
+	Reverse the direction of the track, returning a new object.
+	@return [MSR::Track] the reversed track
+*/
+static VALUE msr_track_reverse(VALUE self);
+
 VALUE c_MSR_Track = Qnil;
 
 void Init_msr_track()
@@ -23,6 +29,7 @@ void Init_msr_track()
 	rb_define_method(c_MSR_Track, "initialize", msr_track_initialize, 1);
 	rb_define_method(c_MSR_Track, "data", msr_track_data, 0);
 	rb_define_method(c_MSR_Track, "length", msr_track_length, 0);
+	rb_define_method(c_MSR_Track, "reverse", msr_track_reverse, 0);
 }
 
 VALUE msr_track_initialize(VALUE self, VALUE tk_data_ary)
@@ -56,4 +63,15 @@ static VALUE msr_track_length(VALUE self)
 	VALUE tk_data_ary = rb_iv_get(self, "@data");
 
 	return INT2NUM(RARRAY_LEN(tk_data_ary));
+}
+
+static VALUE msr_track_reverse(VALUE self)
+{
+	msr_track_t tk;
+
+	msr_unwrap_track(self, &tk);
+
+	msr_reverse_track(&tk);
+
+	return msr_track_new(tk);
 }

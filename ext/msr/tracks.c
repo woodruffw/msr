@@ -18,6 +18,12 @@ static VALUE msr_tracks_track2(VALUE self);
 */
 static VALUE msr_tracks_track3(VALUE self);
 
+/*
+	Reverse the direction of the tracks, returning a new object.
+	@return [MSR::Tracks] the reversed tracks
+*/
+static VALUE msr_tracks_reverse(VALUE self);
+
 VALUE c_MSR_Tracks = Qnil;
 
 void Init_msr_tracks()
@@ -28,6 +34,7 @@ void Init_msr_tracks()
 	rb_define_method(c_MSR_Tracks, "track1", msr_tracks_track1, 0);
 	rb_define_method(c_MSR_Tracks, "track2", msr_tracks_track2, 0);
 	rb_define_method(c_MSR_Tracks, "track3", msr_tracks_track3, 0);
+	rb_define_method(c_MSR_Tracks, "reverse", msr_tracks_reverse, 0);
 }
 
 VALUE msr_tracks_initialize(VALUE self, VALUE tk1, VALUE tk2, VALUE tk3)
@@ -64,4 +71,15 @@ static VALUE msr_tracks_track2(VALUE self)
 static VALUE msr_tracks_track3(VALUE self)
 {
 	return rb_iv_get(self, "@track3");
+}
+
+static VALUE msr_tracks_reverse(VALUE self)
+{
+	msr_tracks_t tks;
+
+	msr_unwrap_tracks(self, &tks);
+
+	msr_reverse_tracks(&tks);
+
+	return msr_tracks_new(tks);
 }
