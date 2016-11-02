@@ -111,11 +111,25 @@ class MSRMSR206Test < Minitest::Test
   end
 
   def test_msr206_raw_read
-    skip # TODO
+    msr = MSR::MSR206.new("/dev/ttyUSB0")
+
+    tracks = msr.raw_read
+
+    # make sure we get an instance of the correct class back, but
+    # there's not much else we can test without a constant card
+    assert tracks
+    assert_instance_of MSR::Tracks, tracks
   end
 
   def test_msr206_iso_read
-    skip # TODO
+    msr = MSR::MSR206.new("/dev/ttyUSB0")
+
+    tracks = msr.raw_read
+
+    # make sure we get an instance of the correct class back, but
+    # there's not much else we can test without a constant card
+    assert tracks
+    assert_instance_of MSR::Tracks, tracks
   end
 
   def test_msr206_raw_write
