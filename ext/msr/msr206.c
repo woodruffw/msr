@@ -65,12 +65,10 @@ static VALUE set_bpi(VALUE self, VALUE bpi);
 
 /*
 	Set the bits-per-character on each track.
-	@param bpc1 [Fixnum] the first track's BPC, between 5 and 8
-	@param bpc2 [Fixnum] the second track's BPC, between 5 and 8
-	@param bpc3 [Fixnum] the third track's BPC, between 5 and 8
+	@param bpc_ary [Array<Fixnum>] the array of BPC values
 	@raise [RuntimeError] if the device returns a bad response
 */
-static VALUE set_bpc(VALUE self, VALUE bpc1, VALUE bpc2, VALUE bpc3);
+static VALUE set_bpc(VALUE self, VALUE bpc_ary);
 
 /*
 	Control the LEDs on the device.
@@ -122,7 +120,7 @@ void Init_msr_msr206()
 	rb_define_method(cMSR_MSR206, "coercivity", get_coercivity, 0);
 	rb_define_method(cMSR_MSR206, "coercivity=", set_coercivity, 1);
 	rb_define_method(cMSR_MSR206, "bpi=", set_bpi, 1);
-	rb_define_method(cMSR_MSR206, "bpc=", set_bpc, 3);
+	rb_define_method(cMSR_MSR206, "bpc=", set_bpc, 1);
 	rb_define_method(cMSR_MSR206, "led=", set_led, 1);
 	rb_define_method(cMSR_MSR206, "raw_read", raw_read, 0);
 	rb_define_method(cMSR_MSR206, "iso_read", iso_read, 0);
@@ -308,22 +306,26 @@ static VALUE set_bpi(VALUE self, VALUE bpi)
 	return self;
 }
 
-static VALUE set_bpc(VALUE self, VALUE bpc1, VALUE bpc2, VALUE bpc3)
+static VALUE set_bpc(VALUE self, VALUE bpc_ary)
 {
-	uint8_t bpc_tk1, bpc_tk2, bpc_tk3;
+	uint8_t bpcs[3] = {0};
 	msr206_ctx_t *ctx;
 	int ret;
 
-	Check_Type(bpc1, T_FIXNUM);
-	Check_Type(bpc2, T_FIXNUM);
-	Check_Type(bpc3, T_FIXNUM);
+	Check_Type(bpc_ary, T_ARRAY);
 	Data_Get_Struct(self, msr206_ctx_t, ctx);
 
-	bpc_tk1 = NUM2CHR(bpc1);
-	bpc_tk2 = NUM2CHR(bpc2);
-	bpc_tk3 = NUM2CHR(bpc3);
+	if (RARRAY_LEN(bpc_ary) != MSR_MAX_TRACKS) {
+		rb_raise(rb_eArgError, "Expected %d BPC values, got %ld",
+			MSR_MAX_TRACKS, RARRAY_LEN(bpc_ary));
+	}
 
-	ret = msr_set_bpc(ctx->fd, bpc_tk1, bpc_tk2, bpc_tk3);
+	for (int i = 0; i < MSR_MAX_TRACKS; i++) {
+		Check_Type(rb_ary_entry(bpc_ary, i), T_FIXNUM);
+		bpcs[i] = (uint8_t) NUM2CHR(rb_ary_entry(bpc_ary, i));
+	}
+
+	ret = msr_set_bpc(ctx->fd, bpcs[0], bpcs[1], bpcs[2]);
 
 	if (ret != LIBMSR_ERR_OK) {
 		rb_raise(rb_eRuntimeError, "Couldn't change bpc (%d)", ret);
