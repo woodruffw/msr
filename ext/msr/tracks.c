@@ -30,6 +30,8 @@ void Init_msr_tracks()
 {
 	c_MSR_Tracks = rb_define_class_under(mMSR, "Tracks", rb_cObject);
 
+	rb_define_const(c_MSR_Tracks, "MAX_TRACKS", INT2NUM(MSR_MAX_TRACKS));
+
 	rb_define_method(c_MSR_Tracks, "initialize", msr_tracks_initialize, 3);
 	rb_define_method(c_MSR_Tracks, "track1", msr_tracks_track1, 0);
 	rb_define_method(c_MSR_Tracks, "track2", msr_tracks_track2, 0);
