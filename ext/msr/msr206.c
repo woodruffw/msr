@@ -43,12 +43,14 @@ static VALUE reset(VALUE self);
 /*
 	Get the device's firmware version.
 	@return [String] the firmware version, in "REV?X.XX" format
+	@raise [RuntimeError] if the device returns a bad response
 */
 static VALUE firmware(VALUE self);
 
 /*
 	Get the device's model.
 	@return [String] the model, in "MSR-206-?" format
+	@raise [RuntimeError] if the device returns a bad response
 */
 static VALUE model(VALUE self);
 
