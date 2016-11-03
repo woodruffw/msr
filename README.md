@@ -16,7 +16,7 @@ $ gem install msr # make sure you have libmsr and ruby development headers
 ## Example
 
 Full documentation is
-[available on RubyDoc](http://www.rubydoc.info/gems/msr/0.0.3).
+[available on RubyDoc](http://www.rubydoc.info/gems/msr/).
 
 ```ruby
 require 'msr'
