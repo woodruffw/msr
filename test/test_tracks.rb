@@ -67,4 +67,30 @@ class MSRTracksTest < Minitest::Test
     refute_equal tracks1, tracks2
     assert_equal tracks2, tracks3
   end
+
+  def test_tracks_reversal
+    t1 = MSR::Track.new([1, 2, 3, 4])
+    tracks1 = MSR::Tracks.new(t1, t1, t1)
+
+    t2 = MSR::Track.new([32, 2, 3, 128])
+    tracks2 = MSR::Tracks.new(t2, t2, t2)
+
+    # a reversed tracks and its constructed equivalent should be equal
+    assert_equal tracks2, tracks1.reverse
+    assert_equal tracks1, tracks2.reverse
+
+    # reversal should be deterministic and annihilative
+    assert_equal tracks1, tracks1.reverse.reverse
+    assert_equal tracks2, tracks2.reverse.reverse
+
+    # self-modification methods should retain the current object
+    tracks1.reverse!
+
+    assert_equal tracks1, tracks2
+
+    tracks1.reverse!
+    tracks2.reverse!
+
+    assert_equal tracks1, tracks2
+  end
 end
