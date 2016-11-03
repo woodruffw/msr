@@ -29,11 +29,25 @@ class MSRMSR206Test < Minitest::Test
   end
 
   def test_msr206_firmware
-    skip # TODO
+    msr = MSR::MSR206.new("/dev/ttyUSB0")
+    exp = /REV\w\d\.\d\d/
+
+    firmware = msr.firmware
+
+    # the firmware should be a human-readable string with the expected format
+    assert_instance_of String, firmware
+    assert_match exp, firmware
   end
 
   def test_msr206_model
-    skip # TODO
+    msr = MSR::MSR206.new("/dev/ttyUSB0")
+    exp = /MSR-206-\d/
+
+    model = msr.model
+
+    # the model should be a human-readable string with the expected format
+    assert_instance_of String, model
+    assert_match exp, model
   end
 
   def test_msr206_coercivity
