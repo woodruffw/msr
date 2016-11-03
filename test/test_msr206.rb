@@ -28,6 +28,14 @@ class MSRMSR206Test < Minitest::Test
     assert_equal :pass, msr.ram_test!
   end
 
+  def test_msr206_firmware
+    skip # TODO
+  end
+
+  def test_msr206_model
+    skip # TODO
+  end
+
   def test_msr206_coercivity
     msr = MSR::MSR206.new("/dev/ttyUSB0")
 
