@@ -41,6 +41,18 @@ static VALUE ram_test(VALUE self);
 static VALUE reset(VALUE self);
 
 /*
+	Get the device's firmware version.
+	@return [String] the firmware version, in "REV?X.XX" format
+*/
+static VALUE firmware(VALUE self);
+
+/*
+	Get the device's model.
+	@return [String] the model, in "MSR-206-?" format
+*/
+static VALUE model(VALUE self);
+
+/*
 	Get the device's current coercivity level.
 	@return [Symbol] `:hi` if the device is in Hi-Co mode, `:lo` if Lo-Co
 	@raise [RuntimeError] if the device returns a bad response
@@ -117,6 +129,8 @@ void Init_msr_msr206()
 	rb_define_method(cMSR_MSR206, "sensor_test!", sensor_test, 0);
 	rb_define_method(cMSR_MSR206, "ram_test!", ram_test, 0);
 	rb_define_method(cMSR_MSR206, "reset!", reset, 0);
+	rb_define_method(cMSR_MSR206, "firmware", firmware, 0);
+	rb_define_method(cMSR_MSR206, "model", model, 0);
 	rb_define_method(cMSR_MSR206, "coercivity", get_coercivity, 0);
 	rb_define_method(cMSR_MSR206, "coercivity=", set_coercivity, 1);
 	rb_define_method(cMSR_MSR206, "bpi=", set_bpi, 1);
@@ -235,6 +249,40 @@ static VALUE reset(VALUE self)
 	msr_reset(ctx->fd);
 
 	return self;
+}
+
+static VALUE firmware(VALUE self)
+{
+	msr206_ctx_t *ctx;
+	uint8_t buf[9];
+	int ret;
+
+	Data_Get_Struct(self, msr206_ctx_t, ctx);
+
+	ret = msr_fwrev(ctx->fd, buf);
+
+	if (ret != LIBMSR_ERR_OK) {
+		rb_raise(rb_eRuntimeError, "Couldn't get device firmware (%d)", ret);
+	}
+
+	return rb_str_new_cstr(buf);
+}
+
+static VALUE model(VALUE self)
+{
+	msr206_ctx_t *ctx;
+	uint8_t buf[10];
+	int ret;
+
+	Data_Get_Struct(self, msr206_ctx_t, ctx);
+
+	ret = msr_model(ctx->fd, buf);
+
+	if (ret != LIBMSR_ERR_OK) {
+		rb_raise(rb_eRuntimeError, "Couldn't get device model (%d)", ret);
+	}
+
+	return rb_str_new_cstr(buf);
 }
 
 static VALUE get_coercivity(VALUE self)
