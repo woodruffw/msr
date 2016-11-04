@@ -33,7 +33,6 @@ static VALUE sensor_test(VALUE self);
 */
 static VALUE ram_test(VALUE self);
 
-
 /*
 	Reset the device to a ready state.
 	@note This method pauses for 100ms.
@@ -119,7 +118,6 @@ static VALUE raw_write(VALUE self, VALUE tks_obj);
 	@note This method is interactive.
 */
 static VALUE iso_write(VALUE self, VALUE tks_obj);
-
 
 void Init_msr_msr206()
 {
