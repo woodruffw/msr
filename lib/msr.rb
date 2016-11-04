@@ -5,5 +5,5 @@ require_relative "msr/msr206"
 require_relative "msr/msr505c"
 
 module MSR
-  VERSION = "0.0.3".freeze
+  VERSION = "0.0.4".freeze
 end
