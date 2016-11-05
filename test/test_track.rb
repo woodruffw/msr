@@ -29,6 +29,13 @@ class MSRTrackTest < Minitest::Test
     end
   end
 
+  def test_track_empty
+    track = MSR::Track.new([])
+
+    # a track created with no data should be empty
+    assert_predicate track, :empty?
+  end
+
   def test_track_data_and_length
     track = MSR::Track.new([1, 2, 3, 4])
 
@@ -72,5 +79,12 @@ class MSRTrackTest < Minitest::Test
     track2.reverse!
 
     assert_equal track1, track2
+  end
+
+  def test_track_to_s
+    track = MSR::Track.new([65, 66, 67, 68, 69]) # A, B, C, D, E
+
+    # track data should be converted to ASCII characters
+    assert_equal "ABCDE", track.to_s
   end
 end

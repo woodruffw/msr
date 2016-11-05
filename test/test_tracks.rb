@@ -30,6 +30,30 @@ class MSRTracksTest < Minitest::Test
     end
   end
 
+  def test_tracks_empty
+    t = MSR::Track.new([])
+    tracks = MSR::Tracks.new(t, t, t)
+
+    # tracks created with no data should be collectively empty
+    assert_predicate tracks, :empty?
+  end
+
+  def test_tracks_collection
+    t1 = MSR::Track.new([1, 2, 3])
+    t2 = MSR::Track.new([4, 5, 6])
+    t3 = MSR::Track.new([7, 8, 9])
+    tracks = MSR::Tracks.new(t1, t2, t3)
+
+    # we expect an Array of 3 MSR::Track instances
+    assert tracks.tracks
+    assert_instance_of Array, tracks.tracks
+
+    # indices 0, 1, and 2 are our track instances
+    assert_instance_of MSR::Track, tracks.tracks[0]
+    assert_instance_of MSR::Track, tracks.tracks[1]
+    assert_instance_of MSR::Track, tracks.tracks[2]
+  end
+
   def test_tracks_individual
     t1 = MSR::Track.new([1, 2, 3])
     t2 = MSR::Track.new([4, 5, 6])

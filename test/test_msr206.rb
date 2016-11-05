@@ -2,6 +2,9 @@ require "minitest/autorun"
 require "msr"
 
 class MSRMSR206Test < Minitest::Test
+  # better hope this is your device...
+  MSR_SERIAL_DEVICE = "/dev/ttyUSB0"
+
   def test_msr206_exists
     assert MSR.const_defined?(:MSR206)
   end
@@ -11,8 +14,7 @@ class MSRMSR206Test < Minitest::Test
       MSR::MSR206.new("/nodevicehere")
     end
 
-    # better hope this is your device...
-    msr = MSR::MSR206.new("/dev/ttyUSB0")
+    msr = MSR::MSR206.new(MSR_SERIAL_DEVICE)
 
     # we expect an instance of MSR::MSR206
     assert msr
@@ -20,7 +22,7 @@ class MSRMSR206Test < Minitest::Test
   end
 
   def test_msr206_checks
-    msr = MSR::MSR206.new("/dev/ttyUSB0")
+    msr = MSR::MSR206.new(MSR_SERIAL_DEVICE)
 
     # the MSR should pass communications, sensor, and RAM checks
     assert_equal :pass, msr.comm_test!
@@ -29,7 +31,7 @@ class MSRMSR206Test < Minitest::Test
   end
 
   def test_msr206_firmware
-    msr = MSR::MSR206.new("/dev/ttyUSB0")
+    msr = MSR::MSR206.new(MSR_SERIAL_DEVICE)
     exp = /REV\w\d\.\d\d/
 
     firmware = msr.firmware
@@ -40,7 +42,7 @@ class MSRMSR206Test < Minitest::Test
   end
 
   def test_msr206_model
-    msr = MSR::MSR206.new("/dev/ttyUSB0")
+    msr = MSR::MSR206.new(MSR_SERIAL_DEVICE)
     exp = /MSR-206-\d/
 
     model = msr.model
@@ -51,7 +53,7 @@ class MSRMSR206Test < Minitest::Test
   end
 
   def test_msr206_coercivity
-    msr = MSR::MSR206.new("/dev/ttyUSB0")
+    msr = MSR::MSR206.new(MSR_SERIAL_DEVICE)
 
     # changing the coercivity to something other than :hi/:lo should fail
     assert_raises ArgumentError do
@@ -66,7 +68,7 @@ class MSRMSR206Test < Minitest::Test
   end
 
   def test_msr206_bpi
-    msr = MSR::MSR206.new("/dev/ttyUSB0")
+    msr = MSR::MSR206.new(MSR_SERIAL_DEVICE)
 
     # these should succeed, and are the only valid BPI values
     msr.bpi = 75
@@ -88,7 +90,7 @@ class MSRMSR206Test < Minitest::Test
   end
 
   def test_msr206_bpc
-    msr = MSR::MSR206.new("/dev/ttyUSB0")
+    msr = MSR::MSR206.new(MSR_SERIAL_DEVICE)
 
     # these should succeed
     msr.bpc = [5, 5, 5]
@@ -116,7 +118,7 @@ class MSRMSR206Test < Minitest::Test
   end
 
   def test_msr206_led
-    msr = MSR::MSR206.new("/dev/ttyUSB0")
+    msr = MSR::MSR206.new(MSR_SERIAL_DEVICE)
 
     # setting the LED to something unknown should fail
     assert_raises ArgumentError do
@@ -133,7 +135,7 @@ class MSRMSR206Test < Minitest::Test
   end
 
   def test_msr206_raw_read
-    msr = MSR::MSR206.new("/dev/ttyUSB0")
+    msr = MSR::MSR206.new(MSR_SERIAL_DEVICE)
 
     tracks = msr.raw_read
 
@@ -144,7 +146,7 @@ class MSRMSR206Test < Minitest::Test
   end
 
   def test_msr206_iso_read
-    msr = MSR::MSR206.new("/dev/ttyUSB0")
+    msr = MSR::MSR206.new(MSR_SERIAL_DEVICE)
 
     tracks = msr.raw_read
 
