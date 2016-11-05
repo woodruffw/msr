@@ -1,14 +1,18 @@
 module MSR
   # Represents (up to) three tracks from a magnetic stripe card.
   class Tracks
+    # Whether or not all tracks are empty.
+    # @return [Boolean] `true` if all tracks are empty, `false` otherwise
+    def empty?
+      tracks.all?(&:empty?)
+    end
+
     # Reverse the direction of the tracks, in place.
     # @return [MSR::Tracks] the current instance
     def reverse!
       reversed = self.reverse
 
-      @track1 = reversed.track1
-      @track2 = reversed.track2
-      @track3 = reversed.track3
+      @tracks = reversed.tracks
 
       self # return ourself, just for convenience
     end

@@ -4,19 +4,25 @@
 	The first track on the card.
 	@return [MSR::Track] the track object
 */
-static VALUE msr_tracks_track1(VALUE self);
+static VALUE msr_tracks_get_track1(VALUE self);
 
 /*
 	The second track on the card.
 	@return [MSR::Track] the track object
 */
-static VALUE msr_tracks_track2(VALUE self);
+static VALUE msr_tracks_get_track2(VALUE self);
 
 /*
 	The third track on the card.
 	@return [MSR::Track] the track object
 */
-static VALUE msr_tracks_track3(VALUE self);
+static VALUE msr_tracks_get_track3(VALUE self);
+
+/*
+	All tracks on the card, as an array.
+	@return [Array<MSR::Track>] all card tracks
+*/
+static VALUE msr_tracks_get_tracks(VALUE self);
 
 /*
 	Reverse the direction of the tracks, returning a new object.
@@ -33,14 +39,17 @@ void Init_msr_tracks()
 	rb_define_const(c_MSR_Tracks, "MAX_TRACKS", INT2NUM(MSR_MAX_TRACKS));
 
 	rb_define_method(c_MSR_Tracks, "initialize", msr_tracks_initialize, 3);
-	rb_define_method(c_MSR_Tracks, "track1", msr_tracks_track1, 0);
-	rb_define_method(c_MSR_Tracks, "track2", msr_tracks_track2, 0);
-	rb_define_method(c_MSR_Tracks, "track3", msr_tracks_track3, 0);
+	rb_define_method(c_MSR_Tracks, "track1", msr_tracks_get_track1, 0);
+	rb_define_method(c_MSR_Tracks, "track2", msr_tracks_get_track2, 0);
+	rb_define_method(c_MSR_Tracks, "track3", msr_tracks_get_track3, 0);
+	rb_define_method(c_MSR_Tracks, "tracks", msr_tracks_get_tracks, 0);
 	rb_define_method(c_MSR_Tracks, "reverse", msr_tracks_reverse, 0);
 }
 
 VALUE msr_tracks_initialize(VALUE self, VALUE tk1, VALUE tk2, VALUE tk3)
 {
+	VALUE tks_ary = rb_ary_new();
+
 	if (CLASS_OF(tk1) != c_MSR_Track) {
 		rb_raise(rb_eArgError, "expected track object for track 1");
 	}
@@ -53,26 +62,33 @@ VALUE msr_tracks_initialize(VALUE self, VALUE tk1, VALUE tk2, VALUE tk3)
 		rb_raise(rb_eArgError, "expected track object for track 3");
 	}
 
-	rb_iv_set(self, "@track1", tk1);
-	rb_iv_set(self, "@track2", tk2);
-	rb_iv_set(self, "@track3", tk3);
+	rb_ary_push(tks_ary, tk1);
+	rb_ary_push(tks_ary, tk2);
+	rb_ary_push(tks_ary, tk3);
+
+	rb_iv_set(self, "@tracks", tks_ary);
 
 	return self;
 }
 
-static VALUE msr_tracks_track1(VALUE self)
+static VALUE msr_tracks_get_track1(VALUE self)
 {
-	return rb_iv_get(self, "@track1");
+	return rb_ary_entry(rb_iv_get(self, "@tracks"), 0);
 }
 
-static VALUE msr_tracks_track2(VALUE self)
+static VALUE msr_tracks_get_track2(VALUE self)
 {
-	return rb_iv_get(self, "@track2");
+	return rb_ary_entry(rb_iv_get(self, "@tracks"), 1);
 }
 
-static VALUE msr_tracks_track3(VALUE self)
+static VALUE msr_tracks_get_track3(VALUE self)
 {
-	return rb_iv_get(self, "@track3");
+	return rb_ary_entry(rb_iv_get(self, "@tracks"), 2);
+}
+
+static VALUE msr_tracks_get_tracks(VALUE self)
+{
+	return rb_iv_get(self, "@tracks");
 }
 
 static VALUE msr_tracks_reverse(VALUE self)
