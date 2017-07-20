@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MSR
   # Represents a connection to an MSR206 (or MSR206-compatible device).
   class MSR206

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MSR
   # Represents a single track from a magnetic stripe card.
   class Track
@@ -10,9 +12,7 @@ module MSR
     # Reverse the direction of the track, in place.
     # @return [MSR::Tracks] the current instance
     def reverse!
-      reversed = self.reverse
-
-      @data = reversed.data
+      @data = reverse.data
 
       self # return ourself, just for convenience
     end
@@ -26,10 +26,11 @@ module MSR
 
     # Compare two tracks for equality. Two tracks are said to be equal if they
     # contain the same data, in the same order.
+    # @param other [Track] the track to compare to
     # @return [Boolean] `true` if the two are equal, `false` otherwise
-    def ==(o)
-      return unless o.is_a?(self.class)
-      data == o.data
+    def ==(other)
+      return unless other.is_a?(self.class)
+      data == other.data
     end
   end
 end
